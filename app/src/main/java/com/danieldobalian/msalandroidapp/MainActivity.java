@@ -18,10 +18,7 @@ import com.android.volley.toolbox.Volley;
 import com.microsoft.identity.client.*;
 
 import org.json.JSONObject;
-
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -31,8 +28,6 @@ public class MainActivity extends AppCompatActivity {
 
     /* Azure AD variables */
     private PublicClientApplication sampleApp;
-
-    private String clientId;
 
     private User currentUser;
     private AuthenticationResult authResult;
@@ -52,8 +47,7 @@ public class MainActivity extends AppCompatActivity {
         signInButton = (Button) findViewById(R.id.signIn);
         learnMoreButton = (Button) findViewById(R.id.learnMore);
 
-        clientId = getString(R.string.clientId);
-        scopes = getString(R.string.scopes).split("\\s+");
+        scopes = Constants.SCOPES.split("\\s+");
 
         signInButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -73,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
         if (sampleApp == null) {
             sampleApp = new PublicClientApplication(
                     this.getApplicationContext(),
-                    clientId);
+                    Constants.CLIENT_ID);
             state.setPublicClient(sampleApp);
         }
 
@@ -104,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
             users = sampleApp.getUsers();
 
             if (users != null && users.size() == 1) {
-            /* We have 1 user */
+                /* We have 1 user */
                 currentUser = users.get(0);
                 sampleApp.acquireTokenSilentAsync(scopes, currentUser, getAuthSilentCallback());
             } else {
@@ -112,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
 
                 /* This app does not support multiple users.
                  * Typically, multiple user scenarios depend on app logic to have some
-                 * kind of heuristic to determine user to use (or some ui)
+                 * kind of heuristic to determine user to use (or some ui to pick)
                  */
                 interactiveAcquireToken();
             }

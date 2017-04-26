@@ -41,35 +41,44 @@ import java.lang.String;
 public class PostSignInActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
-    AppSubClass state;
 
-    private String graphURL;
-
+    AppSubClass appState;
     private AuthenticationResult authResult;
     private PublicClientApplication sampleApp;
     String[] scopes;
 
-    Button refreshButton;
+    Button graphButton;
     Button clearCacheButton;
+
+    //
+    // =============================================================================================
+    // Core methods
+    // onCreate()
+    // callGraphAPI()
+    // clearCache()
+    // Callback used when checking for a refresh token
+    // =============================================================================================
+    //
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post_sign_in);
 
-        graphURL = getString(R.string.microsoftGraph);
-        scopes = getString(R.string.scopes).split("\\s+");
+        appState = AppSubClass.getInstance();
+        sampleApp = appState.getPublicClient();
+        authResult = appState.getAuthResult();
+        scopes = Constants.SCOPES.split("\\s+");
 
-        state = AppSubClass.getInstance();
-        sampleApp = state.getPublicClient();
-        authResult = state.getAuthResult();
-
-        refreshButton = (Button) findViewById(R.id.refresh);
+        graphButton = (Button) findViewById(R.id.graph);
         clearCacheButton = (Button) findViewById(R.id.clearCache);
 
-        refreshButton.setOnClickListener(new View.OnClickListener() {
+        graphButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                hasRefreshToken();
+                Toast.makeText(getBaseContext(), getString(R.string.graph), Toast.LENGTH_SHORT)
+                        .show();
+
+                callGraphAPI();
             }
         });
 
@@ -81,9 +90,9 @@ public class PostSignInActivity extends AppCompatActivity {
         });
 
         /* Set Welcome Text */
-        Log.d(TAG, "Signed in: " + state.getAuthResult().getUser().getName());
+        Log.d(TAG, "Signed in: " + authResult.getUser().getName());
         ((TextView) findViewById(R.id.welcome)).setText("Welcome, "
-                + state.getAuthResult().getUser().getName());
+                + authResult.getUser().getName());
 
         /* Write the token status (whether or not we received each token) */
         this.updateTokenUI();
@@ -93,7 +102,7 @@ public class PostSignInActivity extends AppCompatActivity {
 
     }
 
-    /* Use volley to request the /me endpoint from MS Graph
+    /* Use Volley to request the /me endpoint from MS Graph
     *  Sets the UI to what we get back
     */
     private void callGraphAPI() {
@@ -107,7 +116,7 @@ public class PostSignInActivity extends AppCompatActivity {
         } catch (Exception e) {
             Log.d(TAG, "Failed to put parameters: " + e.toString());
         }
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, graphURL,
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, Constants.MSGRAPH_URL,
                 parameters,new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -130,63 +139,13 @@ public class PostSignInActivity extends AppCompatActivity {
             }
         };
 
-        Log.d(TAG, "Adding HTTP GET to Queue");
-        Log.d(TAG, "Request URL: " + graphURL);
-        Log.d(TAG, "Access Token: " + authResult.getAccessToken());
-        Log.d(TAG, "Request: " + request.toString());
+        Log.d(TAG, "Adding HTTP GET to Queue, Request: " + request.toString());
 
         request.setRetryPolicy(new DefaultRetryPolicy(
                 6000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         queue.add(request);
-    }
-
-    /* Write the token status (whether or not we received each token) */
-    private void updateTokenUI() {
-        if (authResult != null) {
-            TextView it = (TextView) findViewById(R.id.itStatus);
-            TextView at = (TextView) findViewById(R.id.atStatus);
-
-            if(authResult.getIdToken() != null) {
-                it.setText(it.getText() + " " + getString(R.string.tokenPresent));
-            } else {
-                it.setText(it.getText() + " " + getString(R.string.noToken));
-            }
-
-            if (authResult.getAccessToken() != null) {
-                at.setText(at.getText() + " " + getString(R.string.tokenPresent));
-            } else {
-                at.setText(at.getText() + " " + getString(R.string.noToken));
-            }
-
-            hasRefreshToken();
-
-        } else {
-            Log.d(TAG, "No authResult, something went wrong.");
-        }
-    }
-
-    /* Write the token status (whether or not we received each token) */
-    private void updateRefreshTokenUI(boolean status) {
-            Toast.makeText(getBaseContext(), getString(R.string.refreshing), Toast.LENGTH_SHORT)
-                    .show();
-
-            TextView rt = (TextView) findViewById(R.id.rtStatus);
-
-            if (rt.getText().toString().contains(getString(R.string.noToken))
-                    || rt.getText().toString().contains(getString(R.string.tokenPresent))) {
-                rt.setText(R.string.RT);
-            }
-            if (status) {
-                rt.setText(rt.getText() + " " + getString(R.string.tokenPresent));
-                Toast.makeText(getBaseContext(), getString(R.string.refreshed), Toast.LENGTH_SHORT)
-                        .show();
-            } else {
-                rt.setText(rt.getText() + " " + getString(R.string.noToken));
-                Toast.makeText(getBaseContext(), getString(R.string.failedRefresh), Toast.LENGTH_SHORT)
-                        .show();
-            }
     }
 
     /* Clears a user's tokens from the cache.
@@ -208,8 +167,6 @@ public class PostSignInActivity extends AppCompatActivity {
                 /* Remove from token cache */
                 sampleApp.remove(users.get(0));
 
-                Toast.makeText(getBaseContext(), "Signed Out!", Toast.LENGTH_SHORT)
-                        .show();
                 Log.d(TAG, "Signed out/cleared cache");
 
             }
@@ -220,10 +177,11 @@ public class PostSignInActivity extends AppCompatActivity {
                     sampleApp.remove(users.get(i));
                 }
 
-                Toast.makeText(getBaseContext(), "Signed Out!", Toast.LENGTH_SHORT)
-                        .show();
                 Log.d(TAG, "Signed out/cleared cache for multiple users");
             }
+
+            Toast.makeText(getBaseContext(), "Signed Out!", Toast.LENGTH_SHORT)
+                    .show();
 
         } catch (MsalClientException e) {
             /* No token in cache, proceed with normal unauthenticated app experience */
@@ -231,6 +189,49 @@ public class PostSignInActivity extends AppCompatActivity {
 
         } catch (IndexOutOfBoundsException e) {
             Log.d(TAG, "User at this position does not exist: " + e.toString());
+        }
+    }
+
+    //
+    // =============================================================================================
+    // Everything below is some kind of helper to update app UI or do non-essential identity tasks
+    // updateGraphUI()
+    // UpdateTokenUI()
+    // hasRefreshToken()
+    // UpdateRefreshTokenUI()
+    // Callback used when checking for a refresh token
+    // =============================================================================================
+    //
+
+    /* Calls the Microsoft Graph and dumps response into UI */
+    private void updateGraphUI(JSONObject response) {
+        TextView graphText = (TextView) findViewById(R.id.graphData);
+        graphText.setText(response.toString());
+    }
+
+    /* Write the token status (whether or not we received each token) */
+    private void updateTokenUI() {
+        if (authResult != null) {
+            TextView it = (TextView) findViewById(R.id.itStatus);
+            TextView at = (TextView) findViewById(R.id.atStatus);
+
+            if(authResult.getIdToken() != null) {
+                it.setText(it.getText() + " " + getString(R.string.tokenPresent));
+            } else {
+                it.setText(it.getText() + " " + getString(R.string.noToken));
+            }
+
+            if (authResult.getAccessToken() != null) {
+                at.setText(at.getText() + " " + getString(R.string.tokenPresent));
+            } else {
+                at.setText(at.getText() + " " + getString(R.string.noToken));
+            }
+
+            /* Only way to check if we have a refresh token is to actually refresh our tokens */
+            hasRefreshToken();
+
+        } else {
+            Log.d(TAG, "No authResult, something went wrong.");
         }
     }
 
@@ -270,10 +271,20 @@ public class PostSignInActivity extends AppCompatActivity {
         }
     }
 
-    /* Calls the Microsoft Graph and dumps response into UI */
-    private void updateGraphUI(JSONObject response) {
-        TextView graphText = (TextView) findViewById(R.id.graphData);
-        graphText.setText(response.toString());
+    /* Write the token status (whether or not we received each token) */
+    private void updateRefreshTokenUI(boolean status) {
+
+        TextView rt = (TextView) findViewById(R.id.rtStatus);
+
+        if (rt.getText().toString().contains(getString(R.string.noToken))
+                || rt.getText().toString().contains(getString(R.string.tokenPresent))) {
+            rt.setText(R.string.RT);
+        }
+        if (status) {
+            rt.setText(rt.getText() + " " + getString(R.string.tokenPresent));
+        } else {
+            rt.setText(rt.getText() + " " + getString(R.string.noToken));
+        }
     }
 
     /* Callback used in for silent acquireToken calls.
@@ -292,7 +303,7 @@ public class PostSignInActivity extends AppCompatActivity {
             public void onError(MsalException exception) {
                 /* Failed to acquireToken */
                 Log.d(TAG, "Authentication failed: " + exception.toString());
-                updateRefreshTokenUI(true);
+                updateRefreshTokenUI(false);
                 if (exception instanceof MsalClientException) {
                     /* Exception inside MSAL, more info inside MsalError.java */
                     assert true;

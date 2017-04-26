@@ -11,16 +11,8 @@
     <string name="IT">ID Token:</string>
     <string name="AT">Access Token:</string>
     <string name="RT">Refresh Token:</string>
-    <string name="refreshing">Refreshing access token...</string>
-    <string name="refreshed">Successfully Refresh Token.</string>
+    <string name="graph">Calling MS Graph...</string>
     <string name="failedRefresh">Failed to Refresh Token.</string>
-
-    <!--Azure AD v2.0 Configurations-->
-    <string name="clientId">074d69f8-eed5-46ed-b577-13a834d0a716</string>
-    <string name="redirectUri">
-        ms-auth-074d69f8-eed5-46ed-b577-13a834d0a716://com.danieldobalian.msalandroidapp</string>
-    <string name="scopes">https://graph.microsoft.com/User.Read</string>
-    <string name="microsoftGraph">https://graph.microsoft.com/v1.0/me</string>
 
     <string name="moreInfo">Tested Versions\n\nMSAL: 0.x.x\nAndroid: 18-25\nAndroid Studio: 2.2.3
         \n\nThis app is intended to demonstrate best practices when using MSAL

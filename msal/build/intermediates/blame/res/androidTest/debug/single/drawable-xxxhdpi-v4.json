@@ -96,11 +96,11 @@
         "source": "/Users/dadaboli/Documents/Projects/build/MSALAndroidApp/msal/build/intermediates/exploded-aar/com.android.support/appcompat-v7/25.1.0/res/drawable-xxxhdpi-v4/abc_scrubber_control_to_pressed_mtrl_005.png"
     },
     {
-        "merged": "/Users/dadaboli/Documents/Projects/build/MSALAndroidApp/msal/build/intermediates/res/merged/androidTest/debug/drawable-xxxhdpi-v4/abc_btn_switch_to_on_mtrl_00001.9.png",
-        "source": "/Users/dadaboli/Documents/Projects/build/MSALAndroidApp/msal/build/intermediates/exploded-aar/com.android.support/appcompat-v7/25.1.0/res/drawable-xxxhdpi-v4/abc_btn_switch_to_on_mtrl_00001.9.png"
-    },
-    {
         "merged": "/Users/dadaboli/Documents/Projects/build/MSALAndroidApp/msal/build/intermediates/res/merged/androidTest/debug/drawable-xxxhdpi-v4/abc_ic_star_half_black_36dp.png",
         "source": "/Users/dadaboli/Documents/Projects/build/MSALAndroidApp/msal/build/intermediates/exploded-aar/com.android.support/appcompat-v7/25.1.0/res/drawable-xxxhdpi-v4/abc_ic_star_half_black_36dp.png"
+    },
+    {
+        "merged": "/Users/dadaboli/Documents/Projects/build/MSALAndroidApp/msal/build/intermediates/res/merged/androidTest/debug/drawable-xxxhdpi-v4/abc_btn_switch_to_on_mtrl_00001.9.png",
+        "source": "/Users/dadaboli/Documents/Projects/build/MSALAndroidApp/msal/build/intermediates/exploded-aar/com.android.support/appcompat-v7/25.1.0/res/drawable-xxxhdpi-v4/abc_btn_switch_to_on_mtrl_00001.9.png"
     }
 ]

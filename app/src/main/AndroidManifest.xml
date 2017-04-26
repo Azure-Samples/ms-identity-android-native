@@ -24,12 +24,15 @@
             android:label="@string/title_activity_post_sign_in"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
 
+        <!--Intent filter to capture System Browser calling back to our app after Sign In-->
         <activity
             android:name="com.microsoft.identity.client.BrowserTabActivity">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
+                <!--Add in your scheme/host from registered redirect URI-->
                 <data android:scheme="msauth-074d69f8-eed5-46ed-b577-13a834d0a716"
                     android:host="com.danieldobalian.msalandroidapp" />
             </intent-filter>

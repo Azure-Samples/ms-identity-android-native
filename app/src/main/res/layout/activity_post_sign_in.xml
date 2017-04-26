@@ -77,7 +77,7 @@
         android:layout_marginBottom="20dp">
 
         <Button
-            android:text="Refresh Access Token"
+            android:text="Call MS Graph"
             android:layout_gravity="bottom|left"
             android:layout_width="186dp"
             android:layout_height="wrap_content"
@@ -85,7 +85,7 @@
             android:layout_marginRight="10dp"
             android:textColor="@color/white"
             android:background="@color/microsoftBlue"
-            android:id="@+id/refresh" />
+            android:id="@+id/graph" />
 
         <Button
             android:text="Sign Out"
