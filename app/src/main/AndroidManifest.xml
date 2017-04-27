@@ -8,21 +8,15 @@
     <application
         android:allowBackup="true"
         android:icon="@drawable/microsoft_logo"
-        android:name=".AppSubClass"
-        android:label="@string/app_name"
+        android:label="MSALAndroidApp"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.NoActionBar">
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".PostSignInActivity"
-            android:label="@string/title_activity_post_sign_in"
-            android:theme="@style/Theme.AppCompat.NoActionBar" />
 
         <!--Intent filter to capture System Browser calling back to our app after Sign In-->
         <activity
@@ -38,10 +32,6 @@
             </intent-filter>
         </activity>
 
-        <activity
-            android:name=".LearnMoreActivity"
-            android:label="@string/title_activity_learn_more"
-            android:theme="@style/Theme.AppCompat.NoActionBar"></activity>
     </application>
 
 </manifest>

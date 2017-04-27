@@ -1,22 +1,22 @@
 <resources>
-    <string name="app_name">MSALAndroidApp</string>
-    <string name="welcome">Welcome to Contoso</string>
-    <string name="aadPlug">Identity by Azure AD v2.0</string>
-    <string name="signInText">Sign in</string>
-    <string name="learnText">Learn more</string>
-    <string name="title_activity_post_sign_in">PostSignInActivity</string>
-    <string name="title_activity_learn_more">LearnMoreActivity</string>
-    <string name="tokenPresent">In Cache</string>
-    <string name="noToken">Null</string>
-    <string name="IT">ID Token:</string>
-    <string name="AT">Access Token:</string>
-    <string name="RT">Refresh Token:</string>
-    <string name="graph">Calling MS Graph...</string>
-    <string name="failedRefresh">Failed to Refresh Token.</string>
+    <!--<string name="app_name">MSALAndroidApp</string>-->
+    <!--<string name="welcome">Welcome to Contoso</string>-->
+    <!--<string name="aadPlug">Identity by Azure AD v2.0</string>-->
+    <!--<string name="signInText">Sign in</string>-->
+    <!--<string name="learnText">Learn more</string>-->
+    <!--<string name="title_activity_post_sign_in">PostSignInActivity</string>-->
+    <!--<string name="title_activity_learn_more">LearnMoreActivity</string>-->
+    <!--<string name="tokenPresent">In Cache</string>-->
+    <!--<string name="noToken">Null</string>-->
+    <!--<string name="IT">ID Token:</string>-->
+    <!--<string name="AT">Access Token:</string>-->
+    <!--<string name="RT">Refresh Token:</string>-->
+    <!--<string name="graph">Calling MS Graph...</string>-->
+    <!--<string name="failedRefresh">Failed to Refresh Token.</string>-->
 
-    <string name="moreInfo">Tested Versions\n\nMSAL: 0.x.x\nAndroid: 18-25\nAndroid Studio: 2.2.3
-        \n\nThis app is intended to demonstrate best practices when using MSAL
-        with Azure AD.  If you encounter any problems with the sample, SDK, or Service please
-        create a new github issue or post on StackOverflow with tag `azure-active-directory`.\n\n
-        This sample is under the MIT License, please see LICENSE for more info.</string>
+    <!--<string name="moreInfo">Tested Versions\n\nMSAL: 0.x.x\nAndroid: 18-25\nAndroid Studio: 2.2.3-->
+        <!--\n\nThis app is intended to demonstrate best practices when using MSAL-->
+        <!--with Azure AD.  If you encounter any problems with the sample, SDK, or Service please-->
+        <!--create a new github issue or post on StackOverflow with tag `azure-active-directory`.\n\n-->
+        <!--This sample is under the MIT License, please see LICENSE for more info.</string>-->
 </resources>

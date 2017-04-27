@@ -4,79 +4,57 @@
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="#FFFFFF"
     android:orientation="vertical"
     tools:context="com.danieldobalian.msalandroidapp.MainActivity">
 
     <TextView
-        android:id="@+id/aadText"
-        android:textColor="@color/text"
-        android:textStyle="bold"
-        android:text="@string/aadPlug"
+        android:text="Welcome, "
+        android:textColor="#3f3f3f"
+        android:textSize="50px"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="right"
-        android:paddingRight="10dp"
-        android:paddingTop="7dp"
-        android:textSize="30px" />
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="15dp"
+        android:id="@+id/welcome"
+        android:visibility="invisible"/>
 
-    <ImageView
-        android:id="@+id/logo"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:layout_gravity="center"
-        android:layout_marginTop="90dp"
-        android:paddingTop="70dp"
-        android:src="@drawable/microsoft_logo" />
-    <TextView
-        android:id="@+id/welcomeText"
-        android:textColor="@color/text"
-        android:textStyle="bold"
-        android:text="@string/welcome"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:paddingTop="20dp"
-        android:textSize="50px" />
-
-    <FrameLayout
+    <Button
+        android:id="@+id/signIn"
+        android:text="Sign in with Microsoft"
+        android:textColor="#FFFFFF"
+        android:background="#00a1f1"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
-    </FrameLayout>
+        android:layout_height="wrap_content"
+        android:layout_marginTop="200dp"
+        android:textAllCaps="false" />
+
+    <TextView
+        android:text="Getting Graph Data..."
+        android:textColor="#3f3f3f"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:id="@+id/graphData"
+        android:visibility="invisible"/>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
-        android:orientation="vertical">
+        android:layout_height="0dip"
+        android:layout_weight="1"
+        android:gravity="center|bottom"
+        android:orientation="vertical" >
 
-            <Button
-                android:id="@+id/signIn"
-                android:text="@string/signInText"
-                android:textColor="@color/white"
-                android:background="@color/microsoftBlue"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
-                android:layout_marginBottom="4dp"
-                android:layout_marginTop="4dp"
-                android:layout_marginLeft="30dp"
-                android:layout_marginRight="30dp" />
-
-            <Button
-                android:id="@+id/learnMore"
-                android:text="@string/learnText"
-                android:textColor="@color/microsoftBlue"
-                android:background="@color/white"
-                android:stateListAnimator="@null"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
-                android:layout_marginBottom="4dp"
-                android:layout_marginTop="4dp"
-                android:layout_marginLeft="30dp"
-                android:layout_marginRight="30dp" />
+        <Button
+            android:text="Sign Out"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"
+            android:textColor="#FFFFFF"
+            android:background="#00a1f1"
+            android:textAllCaps="false"
+            android:id="@+id/clearCache"
+            android:visibility="invisible" />
     </LinearLayout>
 </LinearLayout>
 
