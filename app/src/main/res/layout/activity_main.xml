@@ -20,8 +20,8 @@
         android:visibility="invisible"/>
 
     <Button
-        android:id="@+id/signIn"
-        android:text="Sign in with Microsoft"
+        android:id="@+id/callGraph"
+        android:text="Call Microsoft Graph"
         android:textColor="#FFFFFF"
         android:background="#00a1f1"
         android:layout_width="match_parent"

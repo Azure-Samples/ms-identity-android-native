@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
 
     /* UI & Debugging Variables */
     private static final String TAG = MainActivity.class.getSimpleName();
-    Button signInButton;
+    Button callGraphButton;
     Button signOutButton;
 
     /* Azure AD Variables */
@@ -45,12 +45,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        signInButton = (Button) findViewById(R.id.signIn);
+        callGraphButton = (Button) findViewById(R.id.callGraph);
         signOutButton = (Button) findViewById(R.id.clearCache);
 
-        signInButton.setOnClickListener(new View.OnClickListener() {
+        callGraphButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                onSignInClicked();
+                onCallGraphClicked();
             }
         });
 
@@ -67,28 +67,6 @@ public class MainActivity extends AppCompatActivity {
                     this.getApplicationContext(),
                     CLIENT_ID);
         }
-
-    }
-
-    //
-    // Core Identity methods used by MSAL
-    // ==================================
-    // onActivityResult() - handles redirect from System browser
-    // onSignInClicked() - attempts to get tokens for graph, if it succeeds calls graph & updates UI
-    // onSignOutClicked() - Signs user out of the app & updates UI
-    // callGraphAPI() - called on successful token acquisition which makes an HTTP request to graph
-    //
-
-    /* Handles the redirect from the System Browser */
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        sampleApp.handleInteractiveRequestRedirect(requestCode, resultCode, data);
-    }
-
-    /* Use MSAL to acquireToken for the end-user
-     * Callback will call Graph api w/ access token & update UI
-     */
-    private void onSignInClicked() {
 
         /* Attempt to get a user and acquireTokenSilent
          * If this fails we do an interactive request
@@ -114,6 +92,29 @@ public class MainActivity extends AppCompatActivity {
         } catch (IndexOutOfBoundsException e) {
             Log.d(TAG, "User at this position does not exist: " + e.toString());
         }
+
+    }
+
+    //
+    // Core Identity methods used by MSAL
+    // ==================================
+    // onActivityResult() - handles redirect from System browser
+    // onCallGraphClicked() - attempts to get tokens for graph, if it succeeds calls graph & updates UI
+    // onSignOutClicked() - Signs user out of the app & updates UI
+    // callGraphAPI() - called on successful token acquisition which makes an HTTP request to graph
+    //
+
+    /* Handles the redirect from the System Browser */
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        sampleApp.handleInteractiveRequestRedirect(requestCode, resultCode, data);
+    }
+
+    /* Use MSAL to acquireToken for the end-user
+     * Callback will call Graph api w/ access token & update UI
+     */
+    private void onCallGraphClicked() {
+        sampleApp.acquireToken(getActivity(), SCOPES, getAuthInteractiveCallback());
     }
 
     /* Clears a user's tokens from the cache.
@@ -174,7 +175,7 @@ public class MainActivity extends AppCompatActivity {
                 parameters,new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                /* Successfully called graph, process data and send to signedIn activity */
+                /* Successfully called graph, process data and send to UI */
                 Log.d(TAG, "Response: " + response.toString());
 
                 updateGraphUI(response);
@@ -206,7 +207,7 @@ public class MainActivity extends AppCompatActivity {
     // Helper methods manage UI updates
     // ================================
     // updateGraphUI() - Sets graph response in UI
-    // updateSignedInUI() - Updates UI when token acquisition succeeds
+    // updateSuccessUI() - Updates UI when token acquisition succeeds
     // updateSignedOutUI() - Updates UI when app sign out succeeds
     //
 
@@ -216,9 +217,9 @@ public class MainActivity extends AppCompatActivity {
         graphText.setText(graphResponse.toString());
     }
 
-    /* Set the UI for signed in user */
-    private void updateSignedInUI() {
-        signInButton.setVisibility(View.INVISIBLE);
+    /* Set the UI for successful token acquisition data */
+    private void updateSuccessUI() {
+        callGraphButton.setVisibility(View.INVISIBLE);
         signOutButton.setVisibility(View.VISIBLE);
         findViewById(R.id.welcome).setVisibility(View.VISIBLE);
         ((TextView) findViewById(R.id.welcome)).setText("Welcome, " +
@@ -228,7 +229,7 @@ public class MainActivity extends AppCompatActivity {
 
     /* Set the UI for signed out user */
     private void updateSignedOutUI() {
-        signInButton.setVisibility(View.VISIBLE);
+        callGraphButton.setVisibility(View.VISIBLE);
         signOutButton.setVisibility(View.INVISIBLE);
         findViewById(R.id.welcome).setVisibility(View.INVISIBLE);
         findViewById(R.id.graphData).setVisibility(View.INVISIBLE);
@@ -258,14 +259,14 @@ public class MainActivity extends AppCompatActivity {
                 /* Successfully got a token, call graph now */
                 Log.d(TAG, "Successfully authenticated");
 
-                /* Start post sign in activity */
+                /* Store the authResult */
                 authResult = authenticationResult;
 
                 /* call graph */
                 callGraphAPI();
 
-                /* update the UI to post sign in state */
-                updateSignedInUI();
+                /* update the UI to post call graph state */
+                updateSuccessUI();
             }
 
             @Override
@@ -279,7 +280,6 @@ public class MainActivity extends AppCompatActivity {
                     /* Exception when communicating with the STS, likely config issue */
                 } else if (exception instanceof MsalUiRequiredException) {
                     /* Tokens expired or no session, retry with interactive */
-                    sampleApp.acquireToken(getActivity(), SCOPES, getAuthInteractiveCallback());
                 }
             }
 
@@ -302,14 +302,14 @@ public class MainActivity extends AppCompatActivity {
                 Log.d(TAG, "Successfully authenticated");
                 Log.d(TAG, "ID Token: " + authenticationResult.getIdToken());
 
-                /* Start post sign in activity */
+                /* Store the auth result */
                 authResult = authenticationResult;
 
                 /* call graph */
                 callGraphAPI();
 
-                /* update the UI to post sign in state */
-                updateSignedInUI();
+                /* update the UI to post call graph state */
+                updateSuccessUI();
             }
 
             @Override
