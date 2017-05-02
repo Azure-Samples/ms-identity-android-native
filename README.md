@@ -1,10 +1,10 @@
----
+--
 Services: active-directory
 platforms: Android
 author: danieldobalian
 ---
 
-# Sign in Azure AD + MSA Users using MSAL Android
+# Access APIs for Azure AD + MSA Users using MSAL Android
 
 ## Steps to Run
 
