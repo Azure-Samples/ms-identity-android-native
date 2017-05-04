@@ -1,4 +1,4 @@
---
+--- 
 Services: active-directory
 platforms: Android
 author: danieldobalian
@@ -23,10 +23,3 @@ Clone the code and follow Android Studio prompts. Build and run!
 2. Redirect URI format: `msal[clientID]://auth`.  The app may be using a different schema that is out of date with the current MSAL source (but not out-of-date with the one included in this repo)
 3. File issues directly to the repo for sample problems.  For SDK bugs, file them in the [MSAL Source](https://github.com/AzureAD/microsoft-authentication-library-for-android). 
 
-# Acks
-
-Big thanks to the following folks:
-- [Wei Jia](https://github.com/weijjia)
-- [Brian Melton](https://github.com/iambmelt)
-- Simone Giaccio
-- [Brandon Werner](https://github.com/xerners)
