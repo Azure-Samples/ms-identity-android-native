@@ -77,9 +77,6 @@ public class MainActivity extends AppCompatActivity {
                 sampleApp.acquireTokenSilentAsync(SCOPES, users.get(0), getAuthSilentCallback());
             } else {
                 /* We have no user */
-
-                /* Let's do an interactive request */
-                sampleApp.acquireToken(this, SCOPES, getAuthInteractiveCallback());
             }
         } catch (MsalClientException e) {
             Log.d(TAG, "MSAL Exception Generated while getting users: " + e.toString());
