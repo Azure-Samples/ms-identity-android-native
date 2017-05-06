@@ -4,7 +4,7 @@ platforms: Android
 author: danieldobalian
 ---
 
-*Warning* The sample has been updated to point to Maven for MSAL. It will not succeed until Monday, May 8.
+### Warning The sample has been updated to point to Maven for MSAL. It will not succeed until Monday, May 8.
 
 # MSAL Android Sample Microsoft Graph API Sample 
 
