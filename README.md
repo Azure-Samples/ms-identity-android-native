@@ -11,10 +11,10 @@ author: danieldobalian
 
 The MSAL Android preview gives your app the ability to begin using the [Microsoft Cloud](https://cloud.microsoft.com) by supporting [Microsoft Azure Active Directory](https://azure.microsoft.com/en-us/services/active-directory/) and [Microsoft Accounts](https://account.microsoft.com) in a converged experience using industry standard OAuth2 and OpenID Connect. This sample demonstrates all the normal lifecycles your application should experience, including:
 
-* How to get a token for the Microsoft Graph
-* How to refresh a token
-* How to call the Microsoft Graph
-* How to sign a user out of your application
+* Get a token for the Microsoft Graph
+* Refresh a token
+* Call the Microsoft Graph
+* Sign out the user
 
 ## Example
 
@@ -30,7 +30,9 @@ pApp.acquireToken(getActivity(), SCOPES, getAuthInteractiveCallback());
 authenticationResult.getAccessToken();
 ```
 
-## App Registration 
+## Optional App Registration 
+
+The app comes pre-configured for testing.  If you would like to register your own app, please follow the steps below. 
 
 You will need to have a native client application registered with Microsoft using the [Microsoft Identity App Registration Portal](https://apps.dev.microsoft.com/portal/register-app?appType=mobileAndDesktopApp&appTech=android). Make sure to uncheck the *Guided Setup* box and save your app. 
 
