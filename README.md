@@ -4,7 +4,7 @@ platforms: Android
 author: danieldobalian
 ---
 
-# Microsft Authentication Library Android Sample to access the Microsoft Graph 
+# MSAL Android Sample Microsoft Graph API Sample 
 
 | [Getting Started](https://apps.dev.microsoft.com/portal/register-app?appType=mobileAndDesktopApp&appTech=android)| [Library](https://github.com/AzureAD/microsoft-authentication-library-for-android) | [API Reference](http://javadoc.io/doc/com.microsoft.identity.client/msal) | [Support](README.md#community-help-and-support)
 | --- | --- | --- | --- |
