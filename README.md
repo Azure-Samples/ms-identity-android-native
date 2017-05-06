@@ -30,7 +30,7 @@ pApp.acquireToken(getActivity(), SCOPES, getAuthInteractiveCallback());
 authenticationResult.getAccessToken();
 ```
 
-## Optional App Registration 
+## Optional: Register you App  
 
 The app comes pre-configured for testing.  If you would like to register your own app, please follow the steps below. 
 
