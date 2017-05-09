@@ -46,7 +46,7 @@ You will need to have a native client application registered with Microsoft usin
 
 3. Select *Build* > *Clean Project*. 
 
-4. Select *Run* > *Run 'app'*. Make sure the emulator you're using has Chrome. In Android Studio, we recommend using the Pixel image with Android 24. 
+4. Select *Run* > *Run 'app'*. Make sure the emulator you're using has Chrome, if it doesn't follow [these steps](https://github.com/Azure-Samples/active-directory-general-docs/blob/master/AndroidEmulator.md). In Android Studio, we recommend using the Pixel image with Android 24. 
 
 ## Important Info
 
