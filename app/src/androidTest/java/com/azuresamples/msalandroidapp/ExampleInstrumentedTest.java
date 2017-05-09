@@ -1,4 +1,4 @@
-package com.danieldobalian.msalandroidapp;
+package com.azuresamples.msalandroidapp;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

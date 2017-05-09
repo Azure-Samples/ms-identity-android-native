@@ -1,4 +1,4 @@
-package com.danieldobalian.msalandroidapp;
+package com.azuresamples.msalandroidapp;
 
 import org.junit.Test;
 
