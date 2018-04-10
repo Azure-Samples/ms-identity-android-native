@@ -7,7 +7,6 @@ client: Android Mobile App
 service Microsoft Graph
 endpoint: AAD V2
 ---
-
 # MSAL Android Sample Microsoft Graph API Sample 
 
 | [Getting Started](https://apps.dev.microsoft.com/portal/register-app?appType=mobileAndDesktopApp&appTech=android)| [Library](https://github.com/AzureAD/microsoft-authentication-library-for-android) | [API Reference](http://javadoc.io/doc/com.microsoft.identity.client/msal) | [Support](README.md#community-help-and-support)
@@ -26,17 +25,17 @@ The MSAL Android preview gives your app the ability to begin using the
 ## Example
 
 ```Java
-// initialize your app with MSAL
+// Initialize your app with MSAL
 PublicClientApplication pApp = new PublicClientApplication(
                 this.getApplicationContext(),
                 CLIENT_ID);
 
-// perform authentication requests
+// Perform authentication requests
 pApp.acquireToken(getActivity(), SCOPES, getAuthInteractiveCallback());
 
 // ...
 
-// get tokens to call APIs like the Microsoft Graph
+// Get tokens to call APIs like the Microsoft Graph
 authenticationResult.getAccessToken();
 ```
 
