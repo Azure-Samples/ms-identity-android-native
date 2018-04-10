@@ -9,7 +9,7 @@ endpoint: AAD V2
 ---
 # MSAL Android Sample Microsoft Graph API Sample 
 
-| [Getting Started](https://apps.dev.microsoft.com/portal/register-app?appType=mobileAndDesktopApp&appTech=android)| [Library](https://github.com/AzureAD/microsoft-authentication-library-for-android) | [API Reference](http://javadoc.io/doc/com.microsoft.identity.client/msal) | [Support](README.md#community-help-and-support)
+| [Getting Started](https://docs.microsoft.com/azure/active-directory/develop/guidedsetups/active-directory-android)| [Library](https://github.com/AzureAD/microsoft-authentication-library-for-android) | [API Reference](http://javadoc.io/doc/com.microsoft.identity.client/msal) | [Support](README.md#community-help-and-support)
 | --- | --- | --- | --- |
 
 ![Build Badge](https://identitydivision.visualstudio.com/_apis/public/build/definitions/a7934fdd-dcde-4492-a406-7fad6ac00e17/500/badge)
@@ -54,7 +54,7 @@ You will need to have a native client application registered with Microsoft usin
 [App Registration Portal](https://apps.dev.microsoft.com/portal/register-app?appType=mobileAndDesktopApp&appTech=android). 
 
 To create an app,  
-1. Click the `Add an app` button.
+1. Click the `Add an app` button inside the *Converged Apps* section.
 
 2. Name your app and select `Create`. 
     - After the app is created, you'll land on your app management page. 
