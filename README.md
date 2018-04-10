@@ -4,7 +4,7 @@ platforms: Android
 author: danieldobalian
 level: 100
 client: Android Mobile App
-service Microsoft Graph
+service: Microsoft Graph
 endpoint: AAD V2
 ---
 # MSAL Android Sample Microsoft Graph API Sample 
