@@ -27,7 +27,8 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <!--Add in your scheme/host from registered redirect URI-->
-                <data android:scheme="msal074d69f8-eed5-46ed-b577-13a834d0a716"
+                <!--By default, the scheme should be similar to 'msal[appId]' -->
+                <data android:scheme="msalenter_the_application_id_here"
                     android:host="auth" />
             </intent-filter>
         </activity>
