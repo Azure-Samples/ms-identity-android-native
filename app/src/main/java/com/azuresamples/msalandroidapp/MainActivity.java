@@ -22,7 +22,7 @@ import com.microsoft.identity.client.*;
 public class MainActivity extends AppCompatActivity {
 
     /* Azure AD v2 Configs */
-    final static String CLIENT_ID = "908ea860-7546-4009-8f54-03915abcb6ab";
+    final static String CLIENT_ID = "074d69f8-eed5-46ed-b577-13a834d0a716";
     final static String SCOPES [] = {"https://graph.microsoft.com/User.Read"};
     final static String MSGRAPH_URL = "https://graph.microsoft.com/v1.0/me";
 
