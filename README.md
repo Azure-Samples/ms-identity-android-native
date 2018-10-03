@@ -57,6 +57,7 @@ To create an app,
 1. Click the `Add an app` button inside the *Converged Apps* section.
 
 2. Name your app and select `Create`. 
+    - Do not check `Let us help you get started.
     - After the app is created, you'll land on your app management page. 
 
 3. Click `Add Platform`, then select `Native Application`. 
@@ -65,10 +66,10 @@ To create an app,
 
 4. Hit the `Save` button. 
 
-5. Copy your `Application/Client ID` and paste it:
-    - To the AndroidManifest.xml's <intent-filter>
-    - To the `client_id` value inside `res/raw/auth_config.json`
-    - To the `client_id` segment of the `redirect_uri` inside `res/raw/auth_config.json`
+5. Save your `Application/Client ID` and `Redirect/Reply URI` for when you clone the code:
+    - Add the `Application/Client ID` to the AndroidManifest.xml's <intent-filter>
+    - Add the `Application/Client ID` to the `client_id` value inside `res/raw/auth_config.json`
+    - Add the `Redirect/Reply URI` to the `redirect_uri` inside `res/raw/auth_config.json`
 
 ## Steps to Run
 
