@@ -75,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
 
                 sampleApp.acquireTokenSilentAsync(SCOPES, accounts.get(0), getAuthSilentCallback());
             } else {
-                /* We have no account */
+                /* We have no account or >1 account */
             }
         } catch (IndexOutOfBoundsException e) {
             Log.d(TAG, "Account at this position does not exist: " + e.toString());

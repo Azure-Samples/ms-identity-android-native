@@ -5,13 +5,6 @@ buildscript {
         jcenter()
         mavenCentral()
         maven {
-            url 'https://identitydivision.pkgs.visualstudio.com/_packaging/AndroidADAL/maven/v1'
-            credentials {
-                username "VSTS"
-                password System.getenv("VSTS_ENV_ACCESS_TOKEN") ?: "${vstsGradleAccessToken}"
-            }
-        }
-        maven {
             url 'https://maven.google.com/'
             name 'Google'
         }
@@ -30,13 +23,6 @@ allprojects {
     repositories {
         jcenter()
         mavenCentral()
-        maven {
-            url 'https://identitydivision.pkgs.visualstudio.com/_packaging/AndroidADAL/maven/v1'
-            credentials {
-                username "VSTS"
-                password System.getenv("VSTS_ENV_ACCESS_TOKEN") ?: "${vstsGradleAccessToken}"
-            }
-        }
         maven {
             url 'https://maven.google.com/'
             name 'Google'

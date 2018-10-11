@@ -25,7 +25,7 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     implementation 'com.android.volley:volley:1.1.1'
-    implementation(group: 'com.microsoft.identity.client', name: 'msal', version: '0.2.0-RC2')
+    implementation 'com.microsoft.identity.client:msal:0.2.+'
 
     testImplementation 'junit:junit:4.12'
 }
