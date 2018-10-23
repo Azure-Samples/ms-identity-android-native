@@ -17,12 +17,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import com.microsoft.identity.client.*;
-
+import com.microsoft.identity.client.exception.*;
 
 public class MainActivity extends AppCompatActivity {
 
     /* Azure AD v2 Configs */
-    final static String CLIENT_ID = "074d69f8-eed5-46ed-b577-13a834d0a716";
     final static String SCOPES [] = {"https://graph.microsoft.com/User.Read"};
     final static String MSGRAPH_URL = "https://graph.microsoft.com/v1.0/me";
 
@@ -60,29 +59,26 @@ public class MainActivity extends AppCompatActivity {
         if (sampleApp == null) {
             sampleApp = new PublicClientApplication(
                     this.getApplicationContext(),
-                    CLIENT_ID);
+                    R.raw.auth_config);
         }
 
         /* Attempt to get a user and acquireTokenSilent
          * If this fails we do an interactive request
          */
-        List<User> users = null;
+        List<IAccount> accounts = null;
 
         try {
-            users = sampleApp.getUsers();
+            accounts = sampleApp.getAccounts();
 
-            if (users != null && users.size() == 1) {
-                /* We have 1 user */
+            if (accounts != null && accounts.size() == 1) {
+                /* We have 1 account */
 
-                sampleApp.acquireTokenSilentAsync(SCOPES, users.get(0), getAuthSilentCallback());
+                sampleApp.acquireTokenSilentAsync(SCOPES, accounts.get(0), getAuthSilentCallback());
             } else {
-                /* We have no user */
+                /* We have no account or >1 account */
             }
-        } catch (MsalClientException e) {
-            Log.d(TAG, "MSAL Exception Generated while getting users: " + e.toString());
-
         } catch (IndexOutOfBoundsException e) {
-            Log.d(TAG, "User at this position does not exist: " + e.toString());
+            Log.d(TAG, "Account at this position does not exist: " + e.toString());
         }
 
     }
@@ -92,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
     // ==================================
     // onActivityResult() - handles redirect from System browser
     // onCallGraphClicked() - attempts to get tokens for graph, if it succeeds calls graph & updates UI
-    // onSignOutClicked() - Signs user out of the app & updates UI
+    // onSignOutClicked() - Signs account out of the app & updates UI
     // callGraphAPI() - called on successful token acquisition which makes an HTTP request to graph
     //
 
@@ -109,39 +105,36 @@ public class MainActivity extends AppCompatActivity {
         sampleApp.acquireToken(getActivity(), SCOPES, getAuthInteractiveCallback());
     }
 
-    /* Clears a user's tokens from the cache.
+    /* Clears an account's tokens from the cache.
      * Logically similar to "sign out" but only signs out of this app.
      */
     private void onSignOutClicked() {
 
-        /* Attempt to get a user and remove their cookies from cache */
-        List<User> users = null;
+        /* Attempt to get a account and remove their cookies from cache */
+        List<IAccount> accounts = null;
 
         try {
-            users = sampleApp.getUsers();
+            accounts = sampleApp.getAccounts();
 
-            if (users == null) {
-                /* We have no users */
+            if (accounts == null) {
+                /* We have no accounts */
 
-            } else if (users.size() == 1) {
-                /* We have 1 user */
+            } else if (accounts.size() == 1) {
+                /* We have 1 account */
                 /* Remove from token cache */
-                sampleApp.remove(users.get(0));
+                sampleApp.removeAccount(accounts.get(0));
                 updateSignedOutUI();
 
             }
             else {
-                /* We have multiple users */
-                for (int i = 0; i < users.size(); i++) {
-                    sampleApp.remove(users.get(i));
+                /* We have multiple accounts */
+                for (int i = 0; i < accounts.size(); i++) {
+                    sampleApp.removeAccount(accounts.get(i));
                 }
             }
 
             Toast.makeText(getBaseContext(), "Signed Out!", Toast.LENGTH_SHORT)
                     .show();
-
-        } catch (MsalClientException e) {
-            Log.d(TAG, "MSAL Exception Generated while getting users: " + e.toString());
 
         } catch (IndexOutOfBoundsException e) {
             Log.d(TAG, "User at this position does not exist: " + e.toString());
@@ -215,11 +208,11 @@ public class MainActivity extends AppCompatActivity {
         signOutButton.setVisibility(View.VISIBLE);
         findViewById(R.id.welcome).setVisibility(View.VISIBLE);
         ((TextView) findViewById(R.id.welcome)).setText("Welcome, " +
-                authResult.getUser().getName());
+                authResult.getAccount().getUsername());
         findViewById(R.id.graphData).setVisibility(View.VISIBLE);
     }
 
-    /* Set the UI for signed out user */
+    /* Set the UI for signed out account */
     private void updateSignedOutUI() {
         callGraphButton.setVisibility(View.VISIBLE);
         signOutButton.setVisibility(View.INVISIBLE);

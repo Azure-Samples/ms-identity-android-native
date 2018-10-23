@@ -33,8 +33,8 @@ This app is a multi-tenant app meaning it can be used by any Azure AD tenant or 
 ```Java
 // Initialize your app with MSAL
 PublicClientApplication pApp = new PublicClientApplication(
-                this.getApplicationContext(),
-                CLIENT_ID);
+            this.getApplicationContext(),
+            R.raw.auth_config);
 
 // Perform authentication requests
 pApp.acquireToken(getActivity(), SCOPES, getAuthInteractiveCallback());
@@ -47,7 +47,7 @@ authenticationResult.getAccessToken();
 
 ## Optional: Register your App  
 
-The app comes pre-configured for testing.  If you would like to register your own app, please follow 
+The app comes pre-configured for trying the sample.  If you would like to register your own app, please follow 
 the steps below. 
 
 You will need to have a native client application registered with Microsoft using the 
@@ -57,13 +57,19 @@ To create an app,
 1. Click the `Add an app` button inside the *Converged Apps* section.
 
 2. Name your app and select `Create`. 
+    - Do not check `Let us help you get started.
     - After the app is created, you'll land on your app management page. 
 
 3. Click `Add Platform`, then select `Native Application`. 
     - The Redirect URI produced is needed when making Auth requests. If you're using MSAL, it will
-    be automatically constructed by the library. 
+    be automatically constructed by the library unless you do a custom configuration. 
 
 4. Hit the `Save` button. 
+
+5. Save your `Application/Client ID` and `Redirect/Reply URI` for when you clone the code:
+    - Add the `Application/Client ID` to the AndroidManifest.xml's <intent-filter>
+    - Add the `Application/Client ID` to the `client_id` value inside `res/raw/auth_config.json`
+    - Add the `Redirect/Reply URI` to the `redirect_uri` inside `res/raw/auth_config.json`
 
 ## Steps to Run
 
@@ -71,22 +77,12 @@ To create an app,
     ```
     git clone https://github.com/Azure-Samples/active-directory-android-native-v2 
     ```
-2. Open Android Studio 2, and select *open an existing Android Studio project*. Find the cloned project and open it. 
+2. Open Android Studio 3, and select *open an existing Android Studio project*. Find the cloned project and open it. 
 
 3. Select *Build* > *Clean Project*. 
 
 4. Select *Run* > *Run 'app'*. Make sure the emulator you're using has Chrome, if it doesn't follow 
 [these steps](https://github.com/Azure-Samples/active-directory-general-docs/blob/master/AndroidEmulator.md). 
-In Android Studio, we recommend using the Pixel image with Android 24. 
-
-## Important Info
-
-1. There's a more complete app that stores global state and has cleaner UI in the full-sample 
-branch. Check it out!
-2. Redirect URI format: `msal<YOUR_CLIENT_ID>://auth` is strictly enforced by MSAL at the current 
-time.
-3. Find any problems or have requests? Feel free to create an issue or post on Stackoverflow with 
-tag `azure-active-directory`. 
 
 ## Feedback, Community Help, and Support
 
