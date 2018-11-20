@@ -6,7 +6,8 @@
     {
       "type": "AAD",
       "audience": {
-        "type": "AzureADandPersonalMicrosoftAccount"
+        "type": "AzureADandPersonalMicrosoftAccount",
+        "tenant_id": "common"
       }
     }
   ]
