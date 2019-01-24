@@ -20,8 +20,8 @@
         android:visibility="invisible"/>
 
     <Button
-        android:id="@+id/callGraph"
-        android:text="Call Microsoft Graph"
+        android:id="@+id/callApi"
+        android:text="Call the protected API"
         android:textColor="#FFFFFF"
         android:background="#00a1f1"
         android:layout_width="match_parent"
@@ -30,12 +30,12 @@
         android:textAllCaps="false" />
 
     <TextView
-        android:text="Getting Graph Data..."
+        android:text="Getting API Data..."
         android:textColor="#3f3f3f"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="5dp"
-        android:id="@+id/graphData"
+        android:id="@+id/apiData"
         android:visibility="invisible"/>
 
     <LinearLayout

@@ -1,0 +1,17 @@
+{
+  "client_id" : "90c0fe63-bcf2-44d5-8fb7-b8bbc0b29dc6",
+  "authorization_user_agent" : "DEFAULT",
+  "redirect_uri" : "msal90c0fe63-bcf2-44d5-8fb7-b8bbc0b29dc6://auth",
+  "authorities" : [
+    {
+      "type": "B2C",
+      "authority_url": "https://login.microsoftonline.com/tfp/fabrikamb2c.onmicrosoft.com/B2C_1_SUSI",
+      "default": true
+    },
+    {
+      "type": "B2C",
+      "authority_url": "https://login.microsoftonline.com/tfp/fabrikamb2c.onmicrosoft.com/B2C_1_edit_profile",
+      "default": false
+    }
+  ]
+}

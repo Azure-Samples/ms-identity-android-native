@@ -29,7 +29,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <!--Add in your scheme/host from registered redirect URI-->
-                <data android:scheme="msal074d69f8-eed5-46ed-b577-13a834d0a716"
+                <data android:scheme="msal90c0fe63-bcf2-44d5-8fb7-b8bbc0b29dc6"
                     android:host="auth" />
             </intent-filter>
         </activity>
