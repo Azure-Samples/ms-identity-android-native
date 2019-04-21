@@ -22,7 +22,7 @@ import com.microsoft.identity.client.exception.*;
 public class MainActivity extends AppCompatActivity {
 
     /* Azure AD v2 Configs */
-    final static String SCOPES [] = {"https://graph.microsoft.com/User.Read"};
+    final static String[] SCOPES = {"https://graph.microsoft.com/User.Read"};
     final static String MSGRAPH_URL = "https://graph.microsoft.com/v1.0/me";
 
     /* UI & Debugging Variables */
@@ -39,8 +39,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        callGraphButton = (Button) findViewById(R.id.callGraph);
-        signOutButton = (Button) findViewById(R.id.clearCache);
+        callGraphButton = findViewById(R.id.callGraph);
+        signOutButton = findViewById(R.id.clearCache);
 
         callGraphButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -55,12 +55,9 @@ public class MainActivity extends AppCompatActivity {
         });
 
         /* Configure your sample app and save state for this activity */
-        sampleApp = null;
-        if (sampleApp == null) {
-            sampleApp = new PublicClientApplication(
+        sampleApp = new PublicClientApplication(
                     this.getApplicationContext(),
                     R.raw.auth_config);
-        }
 
 
         /* Attempt to get a user and acquireTokenSilent
@@ -70,7 +67,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onAccountsLoaded(final List<IAccount> accounts) {
 
-                if (accounts.isEmpty() && accounts.size() == 1) {
+                if (!accounts.isEmpty()) {
+                    /* This sample doesn't support multi-account scenarios, use the first account */
                     sampleApp.acquireTokenSilentAsync(SCOPES, accounts.get(0), getAuthSilentCallback());
                 } else {
                     /* No accounts or >1 account */
@@ -82,17 +80,10 @@ public class MainActivity extends AppCompatActivity {
     //
     // Core Identity methods used by MSAL
     // ==================================
-    // onActivityResult() - handles redirect from System browser
     // onCallGraphClicked() - attempts to get tokens for graph, if it succeeds calls graph & updates UI
     // onSignOutClicked() - Signs account out of the app & updates UI
     // callGraphAPI() - called on successful token acquisition which makes an HTTP request to graph
     //
-
-    /* Handles the redirect from the System Browser */
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        sampleApp.handleInteractiveRequestRedirect(requestCode, resultCode, data);
-    }
 
     /* Use MSAL to acquireToken for the end-user
      * Callback will call Graph api w/ access token & update UI
@@ -158,7 +149,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }) {
             @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
+            public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
                 headers.put("Authorization", "Bearer " + authResult.getAccessToken());
                 return headers;
@@ -184,7 +175,7 @@ public class MainActivity extends AppCompatActivity {
 
     /* Sets the graph response */
     private void updateGraphUI(JSONObject graphResponse) {
-        TextView graphText = (TextView) findViewById(R.id.graphData);
+        TextView graphText = findViewById(R.id.graphData);
         graphText.setText(graphResponse.toString());
     }
 
@@ -260,7 +251,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onCancel() {
-                /* User canceled the authentication */
+                /* User cancelled the authentication */
                 Log.d(TAG, "User cancelled login.");
             }
         };

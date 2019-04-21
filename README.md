@@ -61,12 +61,7 @@ To create an app,
     - Enter the Package Name from your Android studio project. 
     - Generate a Signature Hash. Refer to the portal for instructions.
 
-4. Hit the `Configured` button.  
-
-5. Copy and paste the ***MSAL Configuration*** into auth_config.JSON. 
-
-6. Inside the AndroidManifest.xml, replace the `android:host` with the same info registered above.
-    - The auth_config.JSON contains this information as a reference inside the `redirect_uri` field. 
+4. Hit the `Configured` button. Store the ***MSAL Configuration*** for the next steps. 
 
 ## Steps to Run
 
@@ -76,9 +71,14 @@ To create an app,
     ```
 2. Open Android Studio, and select *open an existing Android Studio project*. Find the cloned project and open it. 
 
-3. Select *Build* > *Clean Project*. 
+3. Configure the sample code in `auth_config.JSON` and `AndroidManifest.xml`.
+    - Copy and paste the ***MSAL Configuration*** JSON from the Azure portal into `auth_config.JSON`. 
+    - Inside the `AndroidManifest.xml`, replace `android:host` with the same info registered above.
+        - `auth_config.JSON` contains this information as a reference inside the `redirect_uri` field.
 
-4. Select *Run* > *Run 'app'*. Make sure the emulator you're using has Chrome, if it doesn't follow 
+5. Select *Build* > *Clean Project*. 
+
+6. Select *Run* > *Run 'app'*. Make sure the emulator you're using has Chrome, if it doesn't follow 
 [these steps](https://github.com/Azure-Samples/active-directory-general-docs/blob/master/AndroidEmulator.md). 
 
 ## Feedback, Community Help, and Support
