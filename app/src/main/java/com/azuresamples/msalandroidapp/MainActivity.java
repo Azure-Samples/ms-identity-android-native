@@ -109,7 +109,18 @@ public class MainActivity extends AppCompatActivity {
 
                 } else {
                     for (final IAccount account : accounts) {
-                        sampleApp.removeAccount(account);
+                        sampleApp.removeAccount(
+                                account,
+                                new PublicClientApplication.AccountsRemovedCallback() {
+                            @Override
+                            public void onAccountsRemoved(Boolean isSuccess) {
+                                if (isSuccess) {
+                                    /* successfully removed account */
+                                } else {
+                                    /* failed to remove account */
+                                }
+                            }
+                        });
                     }
                 }
 
