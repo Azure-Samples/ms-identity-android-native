@@ -30,7 +30,8 @@
 
                 <!--Add in your scheme/host from registered redirect URI-->
                 <data android:scheme="msauth"
-                    android:host="<PACKAGE_NAME>/<SIGNATURE HASH> - must be registered at https://aka.ms/MobileAppReg" />
+                    android:host= "<PACKAGE_NAME> - must be registered at https://aka.ms/MobileAppReg"
+                    android:path= "/<ENCODED_SIGNATURE_HASH - must be registered at https://aka.ms/MobileAppReg>" />
             </intent-filter>
         </activity>
 
