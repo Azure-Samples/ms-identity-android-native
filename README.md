@@ -7,7 +7,7 @@ client: Android Mobile App
 service: Microsoft Graph
 endpoint: AAD V2
 ---
-# MSAL Android Sample Microsoft Graph API Sample 
+# MSAL Android app calling Microsoft Graph 
 
 | [Getting Started](https://docs.microsoft.com/azure/active-directory/develop/guidedsetups/active-directory-android)| [Library](https://github.com/AzureAD/microsoft-authentication-library-for-android) | [API Reference](http://javadoc.io/doc/com.microsoft.identity.client/msal) | [Support](README.md#community-help-and-support)
 | --- | --- | --- | --- |
@@ -15,10 +15,11 @@ endpoint: AAD V2
 ![Build Badge](https://identitydivision.visualstudio.com/_apis/public/build/definitions/a7934fdd-dcde-4492-a406-7fad6ac00e17/500/badge)
 
 The MSAL Android preview gives your app the ability to begin using the
-[Microsoft Azure Cloud](https://cloud.microsoft.com) by supporting [Microsoft Azure Active Directory](https://azure.microsoft.com/en-us/services/active-directory/) and [Microsoft Accounts](https://account.microsoft.com) in a converged experience using industry standard OAuth2 and OpenID Connect. This sample demonstrates all the normal lifecycles your application should experience, including:
+[Microsoft identity platform](https://aka,ms/aaddev) by supporting [Microsoft Azure Active Directory](https://azure.microsoft.com/en-us/services/active-directory/) and [Microsoft Accounts](https://account.microsoft.com) in a converged experience using industry standard OAuth2 and OpenID Connect. This sample demonstrates all the normal lifecycles your application should experience, including:
 
 * Get a token for the Microsoft Graph
-* Refresh a token
+* Device-wide SSO and Conditional Access suport through the Auth Broker
+* Refresh tokens automatically
 * Call the Microsoft Graph
 * Sign out the user
 
@@ -26,7 +27,7 @@ The MSAL Android preview gives your app the ability to begin using the
 
 This app is a multi-tenant app meaning it can be used by any Azure AD tenant or Microsoft Account.  It demonstrates how a developer can build apps to connect with enterprise users and access their Azure + O365 data via the Microsoft Graph.  During the auth flow, end users will be required to sign in and consent to the permissions of the application, and in some cases may require an admin to consent to the app.  The majority of the logic in this sample shows how to auth an end user and make a basic call to the Microsoft Graph.
 
-![Topology](./images/topology.png)
+![Topology](./images/topology1.png)
 
 ## Example
 
@@ -45,31 +46,22 @@ pApp.acquireToken(getActivity(), SCOPES, getAuthInteractiveCallback());
 authenticationResult.getAccessToken();
 ```
 
-## Optional: Register your App  
+## Register your App  
 
-The app comes pre-configured for trying the sample.  If you would like to register your own app, please follow 
-the steps below. 
-
-You will need to have a native client application registered with Microsoft using the 
-[App Registration Portal](https://apps.dev.microsoft.com/portal/register-app?appType=mobileAndDesktopApp&appTech=android). 
+To begin registering your app, begin at the [Azure portal](https://aka.ms/MobileAppReg)
 
 To create an app,  
-1. Click the `Add an app` button inside the *Converged Apps* section.
+1. Click `New Registration`. 
 
-2. Name your app and select `Create`. 
-    - Do not check `Let us help you get started.
-    - After the app is created, you'll land on your app management page. 
+2. Name your app, select the audience you're targeting, and click `Register`. 
+    - This sample is focused on `Accounts in any organization and personal Microsoft accounts`, but can be modified to support any audience. 
+    - Do not register a Redirect URI. 
 
-3. Click `Add Platform`, then select `Native Application`. 
-    - The Redirect URI produced is needed when making Auth requests. If you're using MSAL, it will
-    be automatically constructed by the library unless you do a custom configuration. 
+3. Click `Authentication` > `Add Platform` > `Android`. 
+    - Enter the Package Name from your Android studio project. 
+    - Generate a Signature Hash. Refer to the portal for instructions.
 
-4. Hit the `Save` button. 
-
-5. Save your `Application/Client ID` and `Redirect/Reply URI` for when you clone the code:
-    - Add the `Application/Client ID` to the AndroidManifest.xml's <intent-filter>
-    - Add the `Application/Client ID` to the `client_id` value inside `res/raw/auth_config.json`
-    - Add the `Redirect/Reply URI` to the `redirect_uri` inside `res/raw/auth_config.json`
+4. Hit the `Configured` button. Store the ***MSAL Configuration*** for the next steps. 
 
 ## Steps to Run
 
@@ -77,12 +69,17 @@ To create an app,
     ```
     git clone https://github.com/Azure-Samples/active-directory-android-native-v2 
     ```
-2. Open Android Studio 3, and select *open an existing Android Studio project*. Find the cloned project and open it. 
+2. Open Android Studio, and select *open an existing Android Studio project*. Find the cloned project and open it. 
 
-3. Select *Build* > *Clean Project*. 
+3. Configure the sample code in `auth_config.JSON` and `AndroidManifest.xml`.
+    - Copy and paste the ***MSAL Configuration*** JSON from the Azure portal into `auth_config.JSON`. 
+    - Inside the `AndroidManifest.xml`, replace `android:host` and `android:path` with the same info registered above.
+        - `auth_config.JSON` contains this information as a reference inside the `redirect_uri` field.
+        - The Signature Hash should NOT be URL encoded in the `AndroidManifest.xml`. 
 
-4. Select *Run* > *Run 'app'*. Make sure the emulator you're using has Chrome, if it doesn't follow 
-[these steps](https://github.com/Azure-Samples/active-directory-general-docs/blob/master/AndroidEmulator.md). 
+5. Select *Build* > *Clean Project*. 
+
+6. Select *Run* > *Run 'app'*. 
 
 ## Feedback, Community Help, and Support
 

@@ -22,7 +22,7 @@ import com.microsoft.identity.client.exception.*;
 public class MainActivity extends AppCompatActivity {
 
     /* Azure AD v2 Configs */
-    final static String SCOPES [] = {"https://graph.microsoft.com/User.Read"};
+    final static String[] SCOPES = {"https://graph.microsoft.com/User.Read"};
     final static String MSGRAPH_URL = "https://graph.microsoft.com/v1.0/me";
 
     /* UI & Debugging Variables */
@@ -32,15 +32,15 @@ public class MainActivity extends AppCompatActivity {
 
     /* Azure AD Variables */
     private PublicClientApplication sampleApp;
-    private AuthenticationResult authResult;
+    private IAuthenticationResult authResult;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        callGraphButton = (Button) findViewById(R.id.callGraph);
-        signOutButton = (Button) findViewById(R.id.clearCache);
+        callGraphButton = findViewById(R.id.callGraph);
+        signOutButton = findViewById(R.id.clearCache);
 
         callGraphButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -55,48 +55,35 @@ public class MainActivity extends AppCompatActivity {
         });
 
         /* Configure your sample app and save state for this activity */
-        sampleApp = null;
-        if (sampleApp == null) {
-            sampleApp = new PublicClientApplication(
+        sampleApp = new PublicClientApplication(
                     this.getApplicationContext(),
                     R.raw.auth_config);
-        }
+
 
         /* Attempt to get a user and acquireTokenSilent
          * If this fails we do an interactive request
          */
-        List<IAccount> accounts = null;
+        sampleApp.getAccounts(new PublicClientApplication.AccountsLoadedCallback() {
+            @Override
+            public void onAccountsLoaded(final List<IAccount> accounts) {
 
-        try {
-            accounts = sampleApp.getAccounts();
-
-            if (accounts != null && accounts.size() == 1) {
-                /* We have 1 account */
-
-                sampleApp.acquireTokenSilentAsync(SCOPES, accounts.get(0), getAuthSilentCallback());
-            } else {
-                /* We have no account or >1 account */
+                if (!accounts.isEmpty()) {
+                    /* This sample doesn't support multi-account scenarios, use the first account */
+                    sampleApp.acquireTokenSilentAsync(SCOPES, accounts.get(0), getAuthSilentCallback());
+                } else {
+                    /* No accounts or >1 account */
+                }
             }
-        } catch (IndexOutOfBoundsException e) {
-            Log.d(TAG, "Account at this position does not exist: " + e.toString());
-        }
-
+        });
     }
 
     //
     // Core Identity methods used by MSAL
     // ==================================
-    // onActivityResult() - handles redirect from System browser
     // onCallGraphClicked() - attempts to get tokens for graph, if it succeeds calls graph & updates UI
     // onSignOutClicked() - Signs account out of the app & updates UI
     // callGraphAPI() - called on successful token acquisition which makes an HTTP request to graph
     //
-
-    /* Handles the redirect from the System Browser */
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        sampleApp.handleInteractiveRequestRedirect(requestCode, resultCode, data);
-    }
 
     /* Use MSAL to acquireToken for the end-user
      * Callback will call Graph api w/ access token & update UI
@@ -107,38 +94,39 @@ public class MainActivity extends AppCompatActivity {
 
     /* Clears an account's tokens from the cache.
      * Logically similar to "sign out" but only signs out of this app.
+     * User will get interactive SSO if trying to sign back-in.
      */
     private void onSignOutClicked() {
+        /* Attempt to get a user and acquireTokenSilent
+         * If this fails we do an interactive request
+         */
+        sampleApp.getAccounts(new PublicClientApplication.AccountsLoadedCallback() {
+            @Override
+            public void onAccountsLoaded(final List<IAccount> accounts) {
 
-        /* Attempt to get a account and remove their cookies from cache */
-        List<IAccount> accounts = null;
+                if (accounts.isEmpty()) {
+                    /* No accounts to remove */
 
-        try {
-            accounts = sampleApp.getAccounts();
-
-            if (accounts == null) {
-                /* We have no accounts */
-
-            } else if (accounts.size() == 1) {
-                /* We have 1 account */
-                /* Remove from token cache */
-                sampleApp.removeAccount(accounts.get(0));
-                updateSignedOutUI();
-
-            }
-            else {
-                /* We have multiple accounts */
-                for (int i = 0; i < accounts.size(); i++) {
-                    sampleApp.removeAccount(accounts.get(i));
+                } else {
+                    for (final IAccount account : accounts) {
+                        sampleApp.removeAccount(
+                                account,
+                                new PublicClientApplication.AccountsRemovedCallback() {
+                            @Override
+                            public void onAccountsRemoved(Boolean isSuccess) {
+                                if (isSuccess) {
+                                    /* successfully removed account */
+                                } else {
+                                    /* failed to remove account */
+                                }
+                            }
+                        });
+                    }
                 }
+
+                updateSignedOutUI();
             }
-
-            Toast.makeText(getBaseContext(), "Signed Out!", Toast.LENGTH_SHORT)
-                    .show();
-
-        } catch (IndexOutOfBoundsException e) {
-            Log.d(TAG, "User at this position does not exist: " + e.toString());
-        }
+        });
     }
 
     /* Use Volley to make an HTTP request to the /me endpoint from MS Graph using an access token */
@@ -172,7 +160,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }) {
             @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
+            public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
                 headers.put("Authorization", "Bearer " + authResult.getAccessToken());
                 return headers;
@@ -198,7 +186,7 @@ public class MainActivity extends AppCompatActivity {
 
     /* Sets the graph response */
     private void updateGraphUI(JSONObject graphResponse) {
-        TextView graphText = (TextView) findViewById(R.id.graphData);
+        TextView graphText = findViewById(R.id.graphData);
         graphText.setText(graphResponse.toString());
     }
 
@@ -219,6 +207,9 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.welcome).setVisibility(View.INVISIBLE);
         findViewById(R.id.graphData).setVisibility(View.INVISIBLE);
         ((TextView) findViewById(R.id.graphData)).setText("No Data");
+
+        Toast.makeText(getBaseContext(), "Signed Out!", Toast.LENGTH_SHORT)
+                .show();
     }
 
     //
@@ -239,8 +230,9 @@ public class MainActivity extends AppCompatActivity {
      */
     private AuthenticationCallback getAuthSilentCallback() {
         return new AuthenticationCallback() {
+
             @Override
-            public void onSuccess(AuthenticationResult authenticationResult) {
+            public void onSuccess(IAuthenticationResult authenticationResult) {
                 /* Successfully got a token, call graph now */
                 Log.d(TAG, "Successfully authenticated");
 
@@ -270,7 +262,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onCancel() {
-                /* User canceled the authentication */
+                /* User cancelled the authentication */
                 Log.d(TAG, "User cancelled login.");
             }
         };
@@ -281,8 +273,9 @@ public class MainActivity extends AppCompatActivity {
      */
     private AuthenticationCallback getAuthInteractiveCallback() {
         return new AuthenticationCallback() {
+
             @Override
-            public void onSuccess(AuthenticationResult authenticationResult) {
+            public void onSuccess(IAuthenticationResult authenticationResult) {
                 /* Successfully got a token, call graph now */
                 Log.d(TAG, "Successfully authenticated");
                 Log.d(TAG, "ID Token: " + authenticationResult.getIdToken());

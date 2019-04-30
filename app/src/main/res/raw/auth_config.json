@@ -1,7 +1,7 @@
 {
-  "client_id" : "074d69f8-eed5-46ed-b577-13a834d0a716",
+  "client_id" : "Register your app at https://aka.ms/MobileAppReg",
   "authorization_user_agent" : "DEFAULT",
-  "redirect_uri" : "msal074d69f8-eed5-46ed-b577-13a834d0a716://auth",
+  "redirect_uri" : "Register your app at https://aka.ms/MobileAppReg",
   "authorities" : [
     {
       "type": "AAD",

@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 27
-    buildToolsVersion "27.0.3"
+    buildToolsVersion "28.0.3"
     defaultConfig {
         applicationId "com.azuresamples.msalandroidapp"
         minSdkVersion 21
@@ -25,7 +25,7 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     implementation 'com.android.volley:volley:1.1.1'
-    implementation 'com.microsoft.identity.client:msal:0.2.+'
+    implementation 'com.microsoft.identity.client:msal:0.3.+'
 
     testImplementation 'junit:junit:4.12'
 }
