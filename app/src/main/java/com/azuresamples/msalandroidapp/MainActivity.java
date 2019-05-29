@@ -2,6 +2,7 @@ package com.azuresamples.msalandroidapp;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -31,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
     Button signOutButton;
 
     /* Azure AD Variables */
-    private PublicClientApplication sampleApp;
+    private IPublicClientApplication sampleApp;
     private IAuthenticationResult authResult;
 
     @Override
@@ -55,27 +56,82 @@ public class MainActivity extends AppCompatActivity {
         });
 
         /* Configure your sample app and save state for this activity */
-        sampleApp = new PublicClientApplication(
-                    this.getApplicationContext(),
-                    R.raw.auth_config);
+        PublicClientApplication.create(this.getApplicationContext(),
+            R.raw.auth_config,
+            new PublicClientApplication.ApplicationCreatedListener() {
+                @Override
+                public void onCreated(IPublicClientApplication application) {
+                    sampleApp = application;
+                    loadAccount();
+                }
 
+                @Override
+                public void onError(MsalException exception) {
+                    /* Fail to initialize PublicClientApplication. */
+                }
+            });
+    }
 
-        /* Attempt to get a user and acquireTokenSilent
-         * If this fails we do an interactive request
-         */
-        sampleApp.getAccounts(new PublicClientApplication.AccountsLoadedCallback() {
-            @Override
-            public void onAccountsLoaded(final List<IAccount> accounts) {
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadAccount();
+    }
 
-                if (!accounts.isEmpty()) {
+    /*
+     * Attempt to get a user and acquireTokenSilent
+     * If this fails we do an interactive request
+     */
+    private void loadAccount(){
+        if (sampleApp == null){
+            return;
+        }
+
+        if (sampleApp instanceof IMultipleAccountPublicClientApplication) {
+            final IMultipleAccountPublicClientApplication app = (IMultipleAccountPublicClientApplication)sampleApp;
+
+            app.getAccounts(new PublicClientApplication.LoadAccountCallback() {
+                @Override
+                public void onTaskCompleted(List<IAccount> result) {
                     /* This sample doesn't support multi-account scenarios, use the first account */
-                    sampleApp.acquireTokenSilentAsync(SCOPES, accounts.get(0), getAuthSilentCallback());
-                } else {
+                    if (!result.isEmpty()) {
+                        sampleApp.acquireTokenSilentAsync(SCOPES, result.get(0), getAuthSilentCallback());
+                    }
+                }
+
+                @Override
+                public void onError(Exception exception) {
                     /* No accounts or >1 account */
                 }
+            });
+        }
+        else if (sampleApp instanceof ISingleAccountPublicClientApplication) {
+            final ISingleAccountPublicClientApplication app = (ISingleAccountPublicClientApplication)sampleApp;
+
+            try {
+                app.getCurrentAccount(new ISingleAccountPublicClientApplication.CurrentAccountListener() {
+                    @Override
+                    public void onAccountLoaded(IAccount activeAccount) {
+                        if (activeAccount != null) {
+                            sampleApp.acquireTokenSilentAsync(SCOPES, activeAccount, getAuthSilentCallback());
+                        }
+                    }
+
+                    @Override
+                    public void onAccountChanged(IAccount priorAccount, IAccount currentAccount) {
+                        // Perform a cleanup task as the signed-in account changed.
+                        if (currentAccount == null) {
+                            updateSignedOutUI();
+                        }
+                    }
+                });
             }
-        });
+            catch (MsalClientException e) {
+                /*  Unexpected error. */
+            }
+        }
     }
+
 
     //
     // Core Identity methods used by MSAL
@@ -100,33 +156,62 @@ public class MainActivity extends AppCompatActivity {
         /* Attempt to get a user and acquireTokenSilent
          * If this fails we do an interactive request
          */
-        sampleApp.getAccounts(new PublicClientApplication.AccountsLoadedCallback() {
-            @Override
-            public void onAccountsLoaded(final List<IAccount> accounts) {
-
-                if (accounts.isEmpty()) {
-                    /* No accounts to remove */
-
-                } else {
+        if (sampleApp instanceof IMultipleAccountPublicClientApplication) {
+            final IMultipleAccountPublicClientApplication app = (IMultipleAccountPublicClientApplication)sampleApp;
+            app.getAccounts(new PublicClientApplication.LoadAccountCallback() {
+                @Override
+                public void onTaskCompleted(List<IAccount> accounts) {
+                    /* This sample doesn't support multi-account scenarios, use the first account */
                     for (final IAccount account : accounts) {
-                        sampleApp.removeAccount(
-                                account,
-                                new PublicClientApplication.AccountsRemovedCallback() {
+                        app.removeAccount(account, new PublicClientApplication.RemoveAccountCallback() {
                             @Override
-                            public void onAccountsRemoved(Boolean isSuccess) {
+                            public void onTaskCompleted(Boolean isSuccess) {
                                 if (isSuccess) {
                                     /* successfully removed account */
+                                    updateSignedOutUI();
                                 } else {
                                     /* failed to remove account */
                                 }
+                            }
+
+                            @Override
+                            public void onError(Exception exception) {
+                                /* Failed to remove account due to an exception. */
                             }
                         });
                     }
                 }
 
-                updateSignedOutUI();
+                @Override
+                public void onError(Exception exception) {
+                    /* No accounts or >1 account */
+                }
+            });
+        }
+        else if (sampleApp instanceof ISingleAccountPublicClientApplication) {
+            final ISingleAccountPublicClientApplication app = (ISingleAccountPublicClientApplication)sampleApp;
+            try {
+                app.removeCurrentAccount(new PublicClientApplication.RemoveAccountCallback() {
+                    @Override
+                    public void onTaskCompleted(Boolean result) {
+                        if (result) {
+                            /* successfully removed account */
+                            updateSignedOutUI();
+                        } else {
+                            /* failed to remove account */
+                        }
+                    }
+
+                    @Override
+                    public void onError(Exception exception) {
+                        /* failed to remove account with an exception */
+                    }
+                });
             }
-        });
+            catch (MsalClientException e) {
+                /*  Unexpected error. */
+            }
+        }
     }
 
     /* Use Volley to make an HTTP request to the /me endpoint from MS Graph using an access token */
@@ -186,6 +271,7 @@ public class MainActivity extends AppCompatActivity {
 
     /* Sets the graph response */
     private void updateGraphUI(JSONObject graphResponse) {
+        findViewById(R.id.graphData).setVisibility(View.VISIBLE);
         TextView graphText = findViewById(R.id.graphData);
         graphText.setText(graphResponse.toString());
     }
@@ -197,7 +283,6 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.welcome).setVisibility(View.VISIBLE);
         ((TextView) findViewById(R.id.welcome)).setText("Welcome, " +
                 authResult.getAccount().getUsername());
-        findViewById(R.id.graphData).setVisibility(View.VISIBLE);
     }
 
     /* Set the UI for signed out account */
@@ -239,11 +324,11 @@ public class MainActivity extends AppCompatActivity {
                 /* Store the authResult */
                 authResult = authenticationResult;
 
-                /* call graph */
-                callGraphAPI();
-
                 /* update the UI to post call graph state */
                 updateSuccessUI();
+
+                /* call graph */
+                callGraphAPI();
             }
 
             @Override
