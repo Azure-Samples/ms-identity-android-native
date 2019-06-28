@@ -1,7 +1,8 @@
 {
-  "client_id" : "Register your app at https://aka.ms/MobileAppReg",
+  "client_id" : "24be1a19-6d3b-49bc-940e-6e5ead8f4fbf",
   "authorization_user_agent" : "DEFAULT",
-  "redirect_uri" : "Register your app at https://aka.ms/MobileAppReg",
+  "redirect_uri" : "msauth://com.azuresamples.msalandroidapp/hk4Z0%2FbBPPUC8ll5PHC83WbD65k%3D",
+  "account_mode" : "SINGLE",
   "authorities" : [
     {
       "type": "AAD",
