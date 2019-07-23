@@ -1,12 +1,16 @@
---- 
-Services: active-directory
-platforms: Android
-author: danieldobalian
-level: 100
-client: Android Mobile App
-service: Microsoft Graph
-endpoint: AAD V2
 ---
+languages:
+- java
+page_type: sample
+description: "The MSAL Android preview gives your app the ability to begin using the
+Microsoft identity platform."
+products:
+- azure
+- azure-active-directory
+- office-ms-graph
+urlFragment: msal-android-app
+---
+
 # MSAL Android app calling Microsoft Graph 
 
 | [Getting Started](https://docs.microsoft.com/azure/active-directory/develop/guidedsetups/active-directory-android)| [Library](https://github.com/AzureAD/microsoft-authentication-library-for-android) | [API Reference](http://javadoc.io/doc/com.microsoft.identity.client/msal) | [Support](README.md#community-help-and-support)
