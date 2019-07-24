@@ -19,7 +19,7 @@ urlFragment: msal-android-app
 ![Build Badge](https://identitydivision.visualstudio.com/_apis/public/build/definitions/a7934fdd-dcde-4492-a406-7fad6ac00e17/500/badge)
 
 The MSAL Android preview gives your app the ability to begin using the
-[Microsoft identity platform](https://aka,ms/aaddev) by supporting [Microsoft Azure Active Directory](https://azure.microsoft.com/en-us/services/active-directory/) and [Microsoft Accounts](https://account.microsoft.com) in a converged experience using industry standard OAuth2 and OpenID Connect. This sample demonstrates all the normal lifecycles your application should experience, including:
+[Microsoft identity platform](https://aka,ms/aaddev) by supporting [Microsoft Azure Active Directory](https://azure.microsoft.com/services/active-directory/) and [Microsoft Accounts](https://account.microsoft.com) in a converged experience using industry standard OAuth2 and OpenID Connect. This sample demonstrates all the normal lifecycles your application should experience, including:
 
 * Get a token for the Microsoft Graph
 * Device-wide SSO and Conditional Access suport through the Auth Broker
