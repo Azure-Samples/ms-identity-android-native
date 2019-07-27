@@ -2,6 +2,8 @@
   "client_id" : "Register your app at https://aka.ms/MobileAppReg",
   "authorization_user_agent" : "DEFAULT",
   "redirect_uri" : "Register your app at https://aka.ms/MobileAppReg",
+  "account_mode" : "SINGLE",
+  "broker_redirect_uri_registered": true,
   "authorities" : [
     {
       "type": "AAD",
