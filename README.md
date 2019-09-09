@@ -7,7 +7,7 @@ Microsoft identity platform."
 products:
 - azure
 - azure-active-directory
-- office-ms-graph
+- ms-graph
 urlFragment: msal-android-app
 ---
 
