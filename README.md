@@ -11,13 +11,13 @@ products:
 urlFragment: msal-android-app
 ---
 
-# DEPRECATED - Please see new Samples for MSAL 1.0
-
-[Java Sample](https://github.com/Azure-Samples/ms-identity-android-java)
-
-[Kotlin Sample](https://github.com/Azure-Samples/ms-identity-android-kotlin)
-
 # MSAL Android app calling Microsoft Graph 
+
+>[!IMPORTANT]
+>DEPRECATED - Please see new Samples for MSAL 1.0
+
+* [Java Sample](https://github.com/Azure-Samples/ms-identity-android-java)
+* [Kotlin Sample](https://github.com/Azure-Samples/ms-identity-android-kotlin)
 
 | [Getting Started](https://docs.microsoft.com/azure/active-directory/develop/guidedsetups/active-directory-android)| [Library](https://github.com/AzureAD/microsoft-authentication-library-for-android) | [API Reference](http://javadoc.io/doc/com.microsoft.identity.client/msal) | [Support](README.md#community-help-and-support)
 | --- | --- | --- | --- |
