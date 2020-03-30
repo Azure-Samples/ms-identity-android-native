@@ -1,28 +1,44 @@
 package com.azuresamples.msalandroidapp;
 
 import android.app.Activity;
-import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
+import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.android.volley.*;
+
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.microsoft.identity.client.AuthenticationCallback;
+import com.microsoft.identity.client.IAccount;
+import com.microsoft.identity.client.IAuthenticationResult;
+import com.microsoft.identity.client.ISingleAccountPublicClientApplication;
+import com.microsoft.identity.client.PublicClientApplication;
+import com.microsoft.identity.client.exception.MsalClientException;
+import com.microsoft.identity.client.exception.MsalException;
+import com.microsoft.identity.client.exception.MsalServiceException;
+import com.microsoft.identity.client.exception.MsalUiRequiredException;
+
 import org.json.JSONObject;
+
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import com.microsoft.identity.client.*;
-import com.microsoft.identity.client.exception.*;
 
 public class MainActivity extends AppCompatActivity {
 
     /* Azure AD v2 Configs */
-    final static String[] SCOPES = {"https://graph.microsoft.com/User.Read"};
+    final static String[] SCOPES = {"User.Read"};
     final static String MSGRAPH_URL = "https://graph.microsoft.com/v1.0/me";
 
     /* UI & Debugging Variables */
@@ -31,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
     Button signOutButton;
 
     /* Azure AD Variables */
-    private PublicClientApplication sampleApp;
+    private ISingleAccountPublicClientApplication sampleApp;
     private IAuthenticationResult authResult;
 
     @Override
@@ -54,27 +70,64 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        /* Configure your sample app and save state for this activity */
-        sampleApp = new PublicClientApplication(
-                    this.getApplicationContext(),
-                    R.raw.auth_config);
+        new CreateSingleAccountPublicClientApplication().execute(this.getApplicationContext());
 
+    }
 
-        /* Attempt to get a user and acquireTokenSilent
-         * If this fails we do an interactive request
-         */
-        sampleApp.getAccounts(new PublicClientApplication.AccountsLoadedCallback() {
+    //
+
+    private class CreateSingleAccountPublicClientApplication extends AsyncTask<Context, Void, ISingleAccountPublicClientApplication> {
+
+        @Override
+        protected ISingleAccountPublicClientApplication doInBackground(Context... contexts) {
+
+            ISingleAccountPublicClientApplication app = null;
+            try {
+                app = PublicClientApplication.createSingleAccountPublicClientApplication(contexts[0], R.raw.auth_config);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (MsalException e) {
+                e.printStackTrace();
+            }
+            return app;
+        }
+
+        @Override
+        protected void onPostExecute(ISingleAccountPublicClientApplication app){
+            sampleApp = app;
+            checkForAccountAndSignInSilently();
+        }
+
+     }
+
+     private void checkForAccountAndSignInSilently(){
+
+        sampleApp.getCurrentAccountAsync(new ISingleAccountPublicClientApplication.CurrentAccountCallback() {
             @Override
-            public void onAccountsLoaded(final List<IAccount> accounts) {
-
-                if (!accounts.isEmpty()) {
-                    /* This sample doesn't support multi-account scenarios, use the first account */
-                    sampleApp.acquireTokenSilentAsync(SCOPES, accounts.get(0), getAuthSilentCallback());
-                } else {
-                    /* No accounts or >1 account */
+            public void onAccountLoaded(@Nullable IAccount activeAccount) {
+                if(activeAccount != null) {
+                    getSilentToken();
                 }
             }
+
+            @Override
+            public void onAccountChanged(@Nullable IAccount priorAccount, @Nullable IAccount currentAccount) {
+                if(currentAccount != null) {
+                    getSilentToken();
+                }
+            }
+
+            @Override
+            public void onError(@NonNull Exception exception) {
+
+            }
         });
+    }
+
+    private void getSilentToken(){
+
+        sampleApp.acquireTokenSilentAsync(SCOPES, getDefaultAuthority(), false, getAuthSilentCallback());
+
     }
 
     //
@@ -89,7 +142,23 @@ public class MainActivity extends AppCompatActivity {
      * Callback will call Graph api w/ access token & update UI
      */
     private void onCallGraphClicked() {
-        sampleApp.acquireToken(getActivity(), SCOPES, getAuthInteractiveCallback());
+        //sampleApp.acquireToken(getActivity(), SCOPES, getAuthInteractiveCallback());
+        sampleApp.signIn(getActivity(), SCOPES, new AuthenticationCallback() {
+            @Override
+            public void onSuccess(IAuthenticationResult authenticationResult) {
+                getSilentToken();
+            }
+
+            @Override
+            public void onError(MsalException exception) {
+
+            }
+
+            @Override
+            public void onCancel() {
+
+            }
+        });
     }
 
     /* Clears an account's tokens from the cache.
@@ -97,36 +166,49 @@ public class MainActivity extends AppCompatActivity {
      * User will get interactive SSO if trying to sign back-in.
      */
     private void onSignOutClicked() {
+
+
         /* Attempt to get a user and acquireTokenSilent
          * If this fails we do an interactive request
          */
-        sampleApp.getAccounts(new PublicClientApplication.AccountsLoadedCallback() {
+        sampleApp.getCurrentAccountAsync(new ISingleAccountPublicClientApplication.CurrentAccountCallback() {
             @Override
-            public void onAccountsLoaded(final List<IAccount> accounts) {
-
-                if (accounts.isEmpty()) {
-                    /* No accounts to remove */
-
-                } else {
-                    for (final IAccount account : accounts) {
-                        sampleApp.removeAccount(
-                                account,
-                                new PublicClientApplication.AccountsRemovedCallback() {
-                            @Override
-                            public void onAccountsRemoved(Boolean isSuccess) {
-                                if (isSuccess) {
-                                    /* successfully removed account */
-                                } else {
-                                    /* failed to remove account */
-                                }
-                            }
-                        });
-                    }
+            public void onAccountLoaded(@Nullable IAccount activeAccount) {
+                if(activeAccount != null){
+                    signOut();
                 }
+            }
 
-                updateSignedOutUI();
+            @Override
+            public void onAccountChanged(@Nullable IAccount priorAccount, @Nullable IAccount currentAccount) {
+                if(currentAccount != null){
+                    signOut();
+                }
+            }
+
+            @Override
+            public void onError(@NonNull Exception exception) {
+
             }
         });
+
+
+    }
+
+    private void signOut(){
+
+        sampleApp.signOut(new ISingleAccountPublicClientApplication.SignOutCallback() {
+            @Override
+            public void onSignOut() {
+                updateSignedOutUI();
+            }
+
+            @Override
+            public void onError(@NonNull MsalException exception) {
+
+            }
+        });
+
     }
 
     /* Use Volley to make an HTTP request to the /me endpoint from MS Graph using an access token */
@@ -196,7 +278,7 @@ public class MainActivity extends AppCompatActivity {
         signOutButton.setVisibility(View.VISIBLE);
         findViewById(R.id.welcome).setVisibility(View.VISIBLE);
         ((TextView) findViewById(R.id.welcome)).setText("Welcome, " +
-                authResult.getAccount().getUsername());
+                authResult.getAccount().getClaims().get("preferred_username"));
         findViewById(R.id.graphData).setVisibility(View.VISIBLE);
     }
 
@@ -222,6 +304,14 @@ public class MainActivity extends AppCompatActivity {
 
     public Activity getActivity() {
         return this;
+    }
+
+    private String getDefaultAuthority(){
+        if(sampleApp != null){
+            return sampleApp.getConfiguration().getDefaultAuthority().getAuthorityURL().toString();
+        }else{
+            return "";
+        }
     }
 
     /* Callback used in for silent acquireToken calls.
@@ -278,7 +368,7 @@ public class MainActivity extends AppCompatActivity {
             public void onSuccess(IAuthenticationResult authenticationResult) {
                 /* Successfully got a token, call graph now */
                 Log.d(TAG, "Successfully authenticated");
-                Log.d(TAG, "ID Token: " + authenticationResult.getIdToken());
+                Log.d(TAG, "ID Token: " + authenticationResult.getAccount().getClaims().get("id_token"));
 
                 /* Store the auth result */
                 authResult = authenticationResult;
